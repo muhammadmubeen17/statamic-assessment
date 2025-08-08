@@ -1,0 +1,26 @@
+title: Footer
+data:
+  copyright:
+    -
+      type: paragraph
+      content:
+        -
+          type: text
+          text: 'All rights reserved.'
+    -
+      type: paragraph
+      content:
+        -
+          type: text
+          text: 'Assessment by '
+        -
+          type: text
+          marks:
+            -
+              type: link
+              attrs:
+                href: 'https://github.com/muhammadmubeen17'
+                rel: null
+                target: null
+                title: null
+          text: 'Mubeen Ahmad'
