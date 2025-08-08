@@ -1,0 +1,184 @@
+title: 'Dynamic Cards'
+fields:
+  -
+    handle: title
+    field:
+      type: text
+      display: Title
+      instructions: 'Main title for the dynamic card section'
+      placeholder: 'Enter a compelling title'
+      character_limit: 100
+      validate:
+        - required
+  -
+    handle: description
+    field:
+      type: textarea
+      display: Description
+      instructions: 'Brief description or subtitle'
+      placeholder: 'Enter a brief description'
+      character_limit: 200
+      rows: 3
+  -
+    handle: images
+    field:
+      type: assets
+      display: Images
+      instructions: 'Upload one or more images for the carousel'
+      container: assets
+      folder: /
+      max_files: 10
+      validate:
+        - required
+  -
+    handle: content
+    field:
+      type: bard
+      display: 'Rich Content'
+      instructions: 'Add rich content with custom sets like accordions, icon lists, and feature highlights'
+      buttons:
+        - h2
+        - h3
+        - bold
+        - italic
+        - unorderedlist
+        - orderedlist
+        - removeformat
+        - quote
+        - anchor
+        - image
+        - table
+        - h1
+        - h4
+        - h5
+        - h6
+        - underline
+        - strikethrough
+        - small
+        - superscript
+        - subscript
+        - code
+        - codeblock
+        - horizontalrule
+        - alignleft
+        - aligncenter
+        - alignright
+        - alignjustify
+      remove_empty_nodes: false
+      sets:
+        main:
+          display: Main
+          sets:
+            accordion:
+              display: Accordion
+              icon: chevron-down
+              fields:
+                -
+                  handle: title
+                  field:
+                    type: text
+                    display: 'Accordion Title'
+                    validate:
+                      - required
+                -
+                  handle: content
+                  field:
+                    type: markdown
+                    display: 'Accordion Content'
+                    validate:
+                      - required
+            icon_list:
+              display: 'Icon List'
+              icon: list
+              fields:
+                -
+                  handle: title
+                  field:
+                    type: text
+                    display: 'Section Title'
+                -
+                  handle: items
+                  field:
+                    type: grid
+                    display: 'List Items'
+                    add_row: 'Add Item'
+                    fields:
+                      -
+                        handle: icon
+                        field:
+                          type: select
+                          display: Icon
+                          options:
+                            check: 'Check Mark'
+                            star: Star
+                            lightning: Lightning
+                            heart: Heart
+                            default: Default
+                      -
+                        handle: item_title
+                        field:
+                          type: text
+                          display: 'Item Title'
+                      -
+                        handle: description
+                        field:
+                          type: textarea
+                          display: Description
+                          rows: 2
+            feature_highlight:
+              display: 'Feature Highlight'
+              icon: star
+              fields:
+                -
+                  handle: icon
+                  field:
+                    type: select
+                    display: Icon
+                    options:
+                      rocket: Rocket
+                      shield: Shield
+                      zap: 'Lightning Bolt'
+                      default: Default
+                -
+                  handle: title
+                  field:
+                    type: text
+                    display: 'Feature Title'
+                    validate:
+                      - required
+                -
+                  handle: description
+                  field:
+                    type: textarea
+                    display: 'Feature Description'
+                    rows: 3
+                -
+                  handle: features
+                  field:
+                    type: list
+                    display: 'Feature List'
+                    add_item: 'Add Feature'
+                -
+                  handle: cta_text
+                  field:
+                    type: text
+                    display: 'CTA Text'
+                -
+                  handle: cta_url
+                  field:
+                    type: text
+                    display: 'CTA URL'
+  -
+    handle: cta_text
+    field:
+      type: text
+      display: 'Call to Action Text'
+      instructions: 'Text for the main call to action button'
+      placeholder: 'Learn More'
+  -
+    handle: cta_url
+    field:
+      type: text
+      display: 'Call to Action URL'
+      instructions: 'URL for the main call to action button'
+      placeholder: /contact

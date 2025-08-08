@@ -21,3 +21,56 @@
 .prose blockquote> ::after {
     content: none !important;
 }
+
+/* Dynamic Cards Custom Styles */
+.dynamic-card-swiper {
+    @apply relative overflow-hidden rounded-lg;
+}
+
+.dynamic-card-swiper .swiper-slide {
+    @apply transition-all duration-300;
+}
+
+.dynamic-card-swiper .swiper-button-next,
+.dynamic-card-swiper .swiper-button-prev {
+    @apply w-10 h-10 bg-black/30 backdrop-blur-sm rounded-full;
+    @apply hover:bg-black/50 transition-all duration-200;
+    @apply transform scale-90 hover:scale-100;
+}
+
+.dynamic-card-swiper .swiper-button-next::after,
+.dynamic-card-swiper .swiper-button-prev::after {
+    @apply text-lg font-bold;
+}
+
+.dynamic-card-swiper .swiper-pagination-bullet {
+    @apply bg-white/70 hover:bg-white transition-colors duration-200;
+    @apply w-3 h-3;
+}
+
+.dynamic-card-swiper .swiper-pagination-bullet-active {
+    @apply bg-white;
+}
+
+/* Accordion Animation */
+.accordion-content {
+    @apply transition-all duration-300 ease-in-out;
+}
+
+/* Icon List Hover Effects */
+.icon-list-item {
+    @apply transition-all duration-200 ease-in-out;
+}
+
+.icon-list-item:hover {
+    @apply transform translate-y-[-2px] shadow-lg;
+}
+
+/* Feature Highlight Hover Effects */
+.feature-highlight {
+    @apply transition-all duration-300 ease-in-out;
+}
+
+.feature-highlight:hover {
+    @apply transform scale-[1.02] shadow-xl;
+}

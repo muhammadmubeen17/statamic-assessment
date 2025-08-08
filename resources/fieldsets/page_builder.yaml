@@ -40,6 +40,13 @@ fields:
               fields:
                 -
                   import: all_posts
+            dynamic_cards:
+              display: 'Dynamic Cards'
+              instructions: 'Interactive cards with image carousel and rich content'
+              icon: layout-split-horizontal
+              fields:
+                -
+                  import: dynamic_cards
             content:
               display: Content
               instructions: null
