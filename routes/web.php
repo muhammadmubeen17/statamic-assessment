@@ -15,6 +15,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::statamic('search', 'search');
 
-// JSON API endpoints for blogs and categories (Antlers-powered .antlers.html views)
-Route::statamic('api/posts', 'api.posts', ['layout' => null]);
-Route::statamic('api/categories', 'api.categories', ['layout' => null]);
+

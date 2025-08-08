@@ -54,7 +54,7 @@
             </div>
 
             {{# Active Filters Display #}}
-            <div x-show="hasActiveFilters" x-transition class="mt-4 pt-4 border-t border-gray-200">
+            <div x-show="state.category !== 'all' || state.q" x-transition class="mt-4 pt-4 border-t border-gray-200">
                 <div class="flex items-center gap-2">
                     <span class="text-sm text-gray-600">Active filters:</span>
                 <span x-show="state.category !== 'all'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
@@ -65,8 +65,8 @@
                             </svg>
                         </button>
                     </span>
-                    <span x-show="searchQuery" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        Search: "<span x-text="searchQuery"></span>"
+                    <span x-show="state.q" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Search: "<span x-text="state.q"></span>"
                         <button @click="clearSearch" class="ml-1 text-green-600 hover:text-green-800">
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -155,7 +155,7 @@
 
         {{# No Results Message #}}
         <div 
-            x-show="filteredPosts.length === 0 && !loading" 
+            x-show="posts.length === 0 && !loading" 
             x-transition
             class="text-center py-12"
         >
@@ -165,8 +165,8 @@
                 </svg>
                 <h3 class="mt-2 text-sm font-medium text-gray-900">No posts found</h3>
                 <p class="mt-1 text-sm text-gray-500">
-                    <span x-show="searchQuery">No posts match your search criteria.</span>
-                    <span x-show="!searchQuery && activeCategory !== 'all'">No posts found in this category.</span>
+                    <span x-show="state.q">No posts match your search criteria.</span>
+                    <span x-show="!state.q && state.category !== 'all'">No posts found in this category.</span>
                 </p>
                 <div class="mt-6">
                     <button 
@@ -233,13 +233,13 @@
 
         {{# End of Results Message #}}
         <div 
-            x-show="filteredPosts.length === 0 && !loading" 
+            x-show="posts.length === 0 && !loading" 
             x-transition
             class="text-center py-8 border-t border-gray-200"
         >
             <p class="text-gray-500 text-sm">
-                <span x-show="searchQuery">No posts match your search criteria.</span>
-                <span x-show="!searchQuery && activeCategory !== 'all'">No posts found in this category.</span>
+                <span x-show="state.q">No posts match your search criteria.</span>
+                <span x-show="!state.q && state.category !== 'all'">No posts found in this category.</span>
             </p>
         </div>
     </div>

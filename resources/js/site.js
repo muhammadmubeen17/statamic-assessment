@@ -62,14 +62,15 @@ Alpine.data('blogFeed', () => ({
     // Query state
     state: {
         page: 1,
-        limit: 4,
+        limit: 6,
         sort: 'date:desc',
         category: 'all',
         q: ''
     },
 
     get totalPages() {
-        return Math.max(1, Math.ceil(this.page.total / this.state.limit));
+        const last = this.page.lastPage || Math.ceil((this.page.total || 0) / this.state.limit) || 1;
+        return Math.max(1, last);
     },
 
     get pageNumbers() {
@@ -101,9 +102,9 @@ Alpine.data('blogFeed', () => ({
 
     async fetchCategories() {
         try {
-            const res = await fetch('/api/categories');
+            const res = await fetch('/api/taxonomies/categories/terms');
             const json = await res.json();
-            this.categories = json.categories || [];
+            this.categories = (json.data || []).map(t => ({ slug: t.slug || t.id || t.handle || t.title?.toLowerCase?.(), title: t.title }));
         } catch (e) {
             console.error('Failed to load categories', e);
         }
@@ -113,21 +114,51 @@ Alpine.data('blogFeed', () => ({
         this.loading = true;
         try {
             const params = new URLSearchParams();
+            // pagination (Statamic REST API expects per_page & page)
             params.set('limit', String(this.state.limit));
-            params.set('offset', String((this.state.page - 1) * this.state.limit));
-            if (this.state.q) params.set('q', this.state.q);
-            if (this.state.category && this.state.category !== 'all') params.set('category', this.state.category);
-            if (this.state.sort) params.set('sort', this.state.sort);
-            // Provide server-safe defaults if not set
-            if (!params.has('limit')) params.set('limit', String(this.state.limit));
-            if (!params.has('offset')) params.set('offset', String((this.state.page - 1) * this.state.limit));
-            const res = await fetch(`/api/posts?${params.toString()}`, { headers: { 'Accept': 'application/json' } });
+            params.set('page', String(this.state.page));
+            // sorting: Statamic expects field names with optional - prefix
+            if (this.state.sort) {
+                const [field, dir] = this.state.sort.split(':');
+                params.set('sort', dir === 'desc' ? `-${field}` : field);
+            }
+            // filtering
+            if (this.state.q) params.set('filter[title:contains]', this.state.q);
+            if (this.state.category && this.state.category !== 'all') params.set('filter[categories:contains]', this.state.category);
+
+            const res = await fetch(`/api/collections/posts/entries?${params.toString()}`, { headers: { 'Accept': 'application/json' } });
             const json = await res.json();
-            this.posts = json.posts || [];
-            const total = Number(json.total || 0);
-            const from = total ? (this.state.page - 1) * this.state.limit + 1 : 0;
-            const to = Math.min(this.state.page * this.state.limit, total);
-            this.page = { total, from, to };
+
+            const items = json.data || [];
+            // Map entries to the shape used in the template
+            const stripHtml = (html) => {
+                if (!html) return '';
+                const el = document.createElement('div');
+                el.innerHTML = html;
+                return (el.textContent || '').trim();
+            };
+
+            this.posts = items.map(item => {
+                const rawContent = Array.isArray(item.content) ? item.content.map(n => n.text).filter(Boolean).join(' ') : '';
+                const excerpt = stripHtml(rawContent).slice(0, 160);
+                const categories = (item.categories || []).map(cat => ({ slug: cat.slug || cat.id || '', title: cat.title || '' }));
+                const featured = (typeof item.featured_image === 'object' && item.featured_image) ? item.featured_image.url : item.featured_image;
+                return {
+                    id: item.id,
+                    title: item.title,
+                    url: item.url || item.permalink,
+                    date: item.date,
+                    featured_image: featured,
+                    excerpt,
+                    categories,
+                };
+            });
+
+            const total = json.meta?.total ?? json.meta?.pagination?.total ?? 0;
+            const from = json.meta?.from ?? json.meta?.pagination?.from ?? (total ? (this.state.page - 1) * this.state.limit + 1 : 0);
+            const to = json.meta?.to ?? json.meta?.pagination?.to ?? Math.min(this.state.page * this.state.limit, total);
+            const lastPage = json.meta?.last_page ?? json.meta?.pagination?.last_page ?? undefined;
+            this.page = { total, from, to, lastPage };
         } catch (e) {
             console.error('Failed to load posts', e);
         } finally {
